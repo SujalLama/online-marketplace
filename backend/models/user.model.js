@@ -24,15 +24,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  about: {
-    type: String,
-    trim: true
+  educator: {
+    type: Boolean,
+    default: false
   },
-  photo: {
-    type: String
-  },
-  following: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
-  followers: [{type: mongoose.Schema.ObjectId, ref: 'User'}]
 })
 
 UserSchema

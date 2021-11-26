@@ -5,7 +5,8 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.routes')
 const authRoutes = require('./routes/auth.routes');
-const postRoutes = require('./routes/post.routes');
+const enrollmentRoutes = require('./routes/enrollment.routes');
+const courseRoutes = require('./routes/course.routes');
 const helmet = require('helmet');
 const path= require('path');
 
@@ -20,7 +21,8 @@ app.use(helmet());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/posts', postRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/enrollment', enrollmentRoutes);
 
 // middleware to serve static files
 app.use(express.static(path.join(__dirname, './files')));
