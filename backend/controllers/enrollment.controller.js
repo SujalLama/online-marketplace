@@ -75,7 +75,7 @@ const remove = async (req, res) => {
 }
 
 const isStudent = (req, res, next) => {
-  const isStudent = req.auth && req.auth._id == req.enrollment.student._id
+  const isStudent = req.auth && req.auth._id.toString() === req.enrollment.student._id.toString()
   if (!isStudent) {
     return res.status('403').json({
       error: "User is not enrolled"
@@ -86,7 +86,7 @@ const isStudent = (req, res, next) => {
 
 const listEnrolled = async (req, res) => {
   try {
-    let enrollments = await Enrollment.find({student: req.auth._id}).sort({'completed': 1}).populate('course', '_id name category')
+    let enrollments = await Enrollment.find({student: req.auth._id}).sort({'completed': 1}).populate('course', '_id name category image')
     res.json(enrollments)
   } catch (err) {
     console.log(err)
@@ -99,7 +99,7 @@ const listEnrolled = async (req, res) => {
 const findEnrollment = async (req, res, next) => {
   try {
     let enrollments = await Enrollment.find({course:req.course._id, student: req.auth._id})
-    if(enrollments.length == 0){
+    if(enrollments.length === 0){
       next()
     }else{
       res.json(enrollments[0])
