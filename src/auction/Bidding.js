@@ -34,14 +34,13 @@ export default function Bidding (props) {
     const socket = io("http://localhost:5000")
 
     useEffect(() => {
-        socket.on('new bid option', payload => {
-            console.log(payload);
-        //   props.updateBids(payload)
+        socket.on('new bid', payload => {   
+          props.updateBids(payload)
         })
         return () => {
-            socket.off('new bid option')
+            socket.off('new bid')
         }
-    })
+    }, [setBid])
     useEffect(() => {
         socket.emit('join auction room', {room: props.auction._id})
         return () => {
