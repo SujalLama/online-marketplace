@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 600,
     margin: 'auto',
     textAlign: 'center',
-    marginTop: theme.spacing(12),
+    marginTop: theme.spacing(5),
     paddingBottom: theme.spacing(2)
   },
   error: {
@@ -68,8 +68,7 @@ export default function Signup() {
         setValues({ ...values, error: '', open: true})
       }
     })
-  }
-
+  }   
     return (<div>
       <Card className={classes.card}>
         <CardContent>
@@ -105,5 +104,5 @@ export default function Signup() {
         </DialogActions>
       </Dialog>
     </div>
-    )
+  )
 }

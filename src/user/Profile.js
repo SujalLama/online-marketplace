@@ -8,6 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Edit from '@material-ui/icons/Edit'
 import Person from '@material-ui/icons/Person'
@@ -16,17 +17,26 @@ import DeleteUser from './DeleteUser'
 import auth from './../auth/auth-helper'
 import {read} from './api-user.js'
 import {Redirect, Link} from 'react-router-dom'
+import MyOrders from './../order/MyOrders'
+import { TEST_CLIENT_ID } from '../utils/constant'
 
 const useStyles = makeStyles(theme => ({
   root: theme.mixins.gutters({
     maxWidth: 600,
     margin: 'auto',
     padding: theme.spacing(3),
-    marginTop: theme.spacing(12)
+    marginTop: theme.spacing(5)
   }),
   title: {
-    marginTop: theme.spacing(3),
+    margin: `${theme.spacing(3)}px 0 ${theme.spacing(2)}px`,
     color: theme.palette.protectedTitle
+  },
+  stripe_connect: {
+    marginRight: '10px',
+  },
+  stripe_connected: {
+    verticalAlign: 'super',
+    marginRight: '10px'
   }
 }))
 
@@ -39,7 +49,6 @@ export default function Profile({ match }) {
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-
     read({
       userId: match.params.userId
     }, {t: jwt.token}, signal).then((data) => {
@@ -55,11 +64,11 @@ export default function Profile({ match }) {
     }
 
   }, [match.params.userId])
-  
-    if (redirectToSignin) {
-      return <Redirect to='/signin'/>
-    }
-    return (
+
+  if (redirectToSignin) {
+    return <Redirect to='/signin'/>
+  }
+  return (
       <Paper className={classes.root} elevation={4}>
         <Typography variant="h6" className={classes.title}>
           Profile
@@ -73,14 +82,24 @@ export default function Profile({ match }) {
             </ListItemAvatar>
             <ListItemText primary={user.name} secondary={user.email}/> {
              auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id &&
-              (<ListItemSecondaryAction>
-                <Link to={"/user/edit/" + user._id}>
-                  <IconButton aria-label="Edit" color="primary">
-                    <Edit/>
-                  </IconButton>
-                </Link>
-                <DeleteUser userId={user._id}/>
-              </ListItemSecondaryAction>)
+             (<ListItemSecondaryAction>
+               {user.seller &&
+                 (user.stripe_seller
+                   ? (<Button variant="contained" disabled className={classes.stripe_connected}>
+                       Stripe connected
+                      </Button>)
+                   : (<a href={"https://connect.stripe.com/oauth/authorize?response_type=code&client_id="+TEST_CLIENT_ID+"&scope=read_write"} className={classes.stripe_connect}>
+                       <span>Stripe</span>
+                      </a>)
+                  )
+                }
+               <Link to={"/user/edit/" + user._id}>
+                 <IconButton aria-label="Edit" color="primary">
+                   <Edit/>
+                 </IconButton>
+               </Link>
+               <DeleteUser userId={user._id}/>
+             </ListItemSecondaryAction>)
             }
           </ListItem>
           <Divider/>
@@ -89,6 +108,7 @@ export default function Profile({ match }) {
               new Date(user.created)).toDateString()}/>
           </ListItem>
         </List>
+        <MyOrders/>
       </Paper>
     )
-  }
+}

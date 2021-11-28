@@ -1,8 +1,6 @@
 const Shop = require('../models/shop.model')
 const extend = require('lodash/extend')
 const errorHandler = require('./../helpers/dbErrorHandler')
-const formidable = require('formidable')
-const fs = require('fs')
 
 
 const create = async (req, res) => {
@@ -12,6 +10,7 @@ const create = async (req, res) => {
     filename = req.file.filename
   }
   let shop = new Shop({name, image: 'shop/' + filename, description})
+  shop.owner = req.profile;
     try {
       let result = await shop.save()
       res.status(200).json(result)
@@ -51,7 +50,6 @@ const defaultPhoto = (req, res) => {
 }
 
 const read = (req, res) => {
-  req.shop.image = undefined
   return res.json(req.shop)
 }
 
@@ -116,7 +114,7 @@ const listByOwner = async (req, res) => {
 }
 
 const isOwner = (req, res, next) => {
-  const isOwner = req.shop && req.auth && req.shop.owner._id == req.auth._id
+  const isOwner = req.shop && req.auth && req.shop.owner._id.toString() === req.auth._id.toString()
   if(!isOwner){
     return res.status('403').json({
       error: "User is not authorized"

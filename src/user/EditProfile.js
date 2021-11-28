@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 600,
     margin: 'auto',
     textAlign: 'center',
-    marginTop: theme.spacing(12),
+    marginTop: theme.spacing(5),
     paddingBottom: theme.spacing(2)
   },
   title: {
@@ -36,22 +36,24 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: 'auto',
     marginBottom: theme.spacing(2)
+  },
+  subheading: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.openTitle
   }
 }))
 
 export default function EditProfile({ match }) {
   const classes = useStyles()
   const [values, setValues] = useState({
-    name: '',
-    password: '',
-    email: '',
-    open: false,
-    error: '',
-    redirectToProfile: false,
-    educator: false
+      name: '',
+      email: '',
+      password: '',
+      seller: false,
+      redirectToProfile: false,
+      error: ''
   })
   const jwt = auth.isAuthenticated()
-
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
@@ -62,7 +64,7 @@ export default function EditProfile({ match }) {
       if (data && data.error) {
         setValues({...values, error: data.error})
       } else {
-        setValues({...values, name: data.name, email: data.email, educator: data.educator})
+        setValues({...values, name: data.name, email: data.email, seller: data.seller})
       }
     })
     return function cleanup(){
@@ -76,7 +78,7 @@ export default function EditProfile({ match }) {
       name: values.name || undefined,
       email: values.email || undefined,
       password: values.password || undefined,
-      educator: values.educator 
+      seller: values.seller || undefined
     }
     update({
       userId: match.params.userId
@@ -96,12 +98,12 @@ export default function EditProfile({ match }) {
     setValues({...values, [name]: event.target.value})
   }
   const handleCheck = (event, checked) => {
-    setValues({...values, educator: checked})
+    setValues({...values, 'seller': checked})
   }
 
-    if (values.redirectToProfile) {
-      return (<Redirect to={'/user/' + values.userId}/>)
-    }
+  if (values.redirectToProfile) {
+    return (<Redirect to={'/user/' + values.userId}/>)
+  }
     return (
       <Card className={classes.card}>
         <CardContent>
@@ -110,10 +112,9 @@ export default function EditProfile({ match }) {
           </Typography>
           <TextField id="name" label="Name" className={classes.textField} value={values.name} onChange={handleChange('name')} margin="normal"/><br/>
           <TextField id="email" type="email" label="Email" className={classes.textField} value={values.email} onChange={handleChange('email')} margin="normal"/><br/>
-          <TextField id="password" type="password" label="Password" className={classes.textField} value={values.password} onChange={handleChange('password')} margin="normal"/><br/>
-          <br/>
+          <TextField id="password" type="password" label="Password" className={classes.textField} value={values.password} onChange={handleChange('password')} margin="normal"/>
           <Typography variant="subtitle1" className={classes.subheading}>
-            I am an Educator
+            Seller Account
           </Typography>
           <FormControlLabel
             control={
@@ -121,10 +122,10 @@ export default function EditProfile({ match }) {
                                 checked: classes.checked,
                                 bar: classes.bar,
                               }}
-                      checked={values.educator}
+                      checked={values.seller}
                       onChange={handleCheck}
               />}
-            label={values.educator? 'Yes' : 'No'}
+            label={values.seller? 'Active' : 'Inactive'}
           />
           <br/> {
             values.error && (<Typography component="p" color="error">
@@ -139,4 +140,3 @@ export default function EditProfile({ match }) {
       </Card>
     )
 }
-

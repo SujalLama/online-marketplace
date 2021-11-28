@@ -9,24 +9,25 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import auth from './../auth/auth-helper'
-import {remove} from './api-course.js'
+import {remove} from './api-product.js'
 
-export default function DeleteCourse(props) {
+export default function DeleteProduct(props) {
   const [open, setOpen] = useState(false)
   
   const jwt = auth.isAuthenticated()
   const clickButton = () => {
     setOpen(true)
   }
-  const deleteCourse = () => {
+  const deleteProduct = () => {
     remove({
-      courseId: props.course._id
+      shopId: props.shopId,
+      productId: props.product._id
     }, {t: jwt.token}).then((data) => {
       if (data.error) {
         console.log(data.error)
       } else {
         setOpen(false)
-        props.onRemove(props.course)
+        props.onRemove(props.product)
       }
     })
   }
@@ -37,26 +38,28 @@ export default function DeleteCourse(props) {
       <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
         <DeleteIcon/>
       </IconButton>
-
       <Dialog open={open} onClose={handleRequestClose}>
-        <DialogTitle>{"Delete "+props.course.name}</DialogTitle>
+        <DialogTitle>{"Delete "+props.product.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirm to delete your course {props.course.name}.
+            Confirm to delete your product {props.product.name}.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRequestClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteCourse} color="secondary" autoFocus="autoFocus">
+          <Button onClick={deleteProduct} color="secondary" autoFocus="autoFocus">
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
     </span>)
+
 }
-DeleteCourse.propTypes = {
-  course: PropTypes.object.isRequired,
+DeleteProduct.propTypes = {
+  shopId: PropTypes.string.isRequired,
+  product: PropTypes.object.isRequired,
   onRemove: PropTypes.func.isRequired
 }
+

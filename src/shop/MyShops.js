@@ -7,13 +7,16 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import Avatar from '@material-ui/core/Avatar'
+import IconButton from '@material-ui/core/IconButton'
 import Icon from '@material-ui/core/Icon'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Edit from '@material-ui/icons/Edit'
 import Divider from '@material-ui/core/Divider'
 import auth from './../auth/auth-helper'
-import {listByInstructor} from './api-course.js'
+import {listByOwner} from './api-shop.js'
 import {Redirect, Link} from 'react-router-dom'
+import DeleteShop from './DeleteShop'
 import { PHOTO_URL } from '../utils/constant'
 
 const useStyles = makeStyles(theme => ({
@@ -21,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 600,
     margin: 'auto',
     padding: theme.spacing(3),
-    marginTop: theme.spacing(12)
+    marginTop: theme.spacing(5)
   }),
   title: {
     margin: `${theme.spacing(3)}px 0 ${theme.spacing(3)}px ${theme.spacing(1)}px` ,
@@ -33,33 +36,25 @@ const useStyles = makeStyles(theme => ({
   },
   leftIcon: {
     marginRight: "8px"
-  },
-  avatar: {
-    borderRadius: 0,
-    width:65,
-    height: 40
-  },
-  listText: {
-    marginLeft: 16
   }
 }))
 
-export default function MyCourses(){
+export default function MyShops(){
   const classes = useStyles()
-  const [courses, setCourses] = useState([])
+  const [shops, setShops] = useState([])
   const [redirectToSignin, setRedirectToSignin] = useState(false)
   const jwt = auth.isAuthenticated()
 
   useEffect(() => {
     const abortController = new AbortController()
     const signal = abortController.signal
-    listByInstructor({
+    listByOwner({
       userId: jwt.user._id
     }, {t: jwt.token}, signal).then((data) => {
       if (data.error) {
         setRedirectToSignin(true)
       } else {
-        setCourses(data)
+        setShops(data)
       }
     })
     return function cleanup(){
@@ -67,34 +62,55 @@ export default function MyCourses(){
     }
   }, [])
 
-  if (redirectToSignin) {
-    return <Redirect to='/signin'/>
+  const removeShop = (shop) => {
+    const updatedShops = [...shops]
+    const index = updatedShops.indexOf(shop)
+    updatedShops.splice(index, 1)
+    setShops(updatedShops)
   }
-  console.log(courses);
-  return (
+
+    if (redirectToSignin) {
+      return <Redirect to='/signin'/>
+    }
+    return (
     <div>
       <Paper className={classes.root} elevation={4}>
         <Typography type="title" className={classes.title}>
-          Your Courses
+          Your Shops
           <span className={classes.addButton}>
-            <Link to="/teach/course/new">
+            <Link to="/seller/shop/new">
               <Button color="primary" variant="contained">
-                <Icon className={classes.leftIcon}>add_box</Icon>  New Course
+                <Icon className={classes.leftIcon}>add_box</Icon>  New Shop
               </Button>
             </Link>
           </span>
         </Typography>
         <List dense>
-        {courses.map((course, i) => {
-            return   <Link to={"/teach/course/"+course._id} key={i}>
+        {shops.map((shop, i) => {
+            return   <span key={i}>
               <ListItem button>
                 <ListItemAvatar>
-                  <Avatar src={PHOTO_URL+course.image} className={classes.avatar}/>
+                  <Avatar src={PHOTO_URL + shop.image}/>
                 </ListItemAvatar>
-                <ListItemText primary={course.name} secondary={course.description} className={classes.listText}/>
+                <ListItemText primary={shop.name} secondary={shop.description}/>
+                { auth.isAuthenticated().user && auth.isAuthenticated().user._id == shop.owner._id &&
+                  (<ListItemSecondaryAction>
+                    <Link to={"/seller/orders/" + shop.name+ '/'+shop._id}>
+                      <Button aria-label="Orders" color="primary">
+                        View Orders
+                      </Button>
+                    </Link>
+                    <Link to={"/seller/shop/edit/" + shop._id}>
+                      <IconButton aria-label="Edit" color="primary">
+                        <Edit/>
+                      </IconButton>
+                    </Link>
+                    <DeleteShop shop={shop} onRemove={removeShop}/>
+                  </ListItemSecondaryAction>)
+                }
               </ListItem>
               <Divider/>
-            </Link>})}
+            </span>})}
         </List>
       </Paper>
     </div>)

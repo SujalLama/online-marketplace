@@ -9,35 +9,29 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import auth from './../auth/auth-helper'
-import {remove} from './api-user.js'
-import {Redirect} from 'react-router-dom'
+import {remove} from './api-shop.js'
 
-export default function DeleteUser(props) {
+export default function DeleteShop(props) {
   const [open, setOpen] = useState(false)
-  const [redirect, setRedirect] = useState(false)
-
+  
   const jwt = auth.isAuthenticated()
   const clickButton = () => {
     setOpen(true)
   }
-  const deleteAccount = () => { 
+  const deleteShop = () => {
     remove({
-      userId: props.userId
+      shopId: props.shop._id
     }, {t: jwt.token}).then((data) => {
-      if (data && data.error) {
+      if (data.error) {
         console.log(data.error)
       } else {
-        auth.signout(() => console.log('deleted'))
-        setRedirect(true)
+        setOpen(false)
+        props.onRemove(props.shop)
       }
     })
   }
   const handleRequestClose = () => {
     setOpen(false)
-  }
-  
-  if (redirect) {
-    return <Redirect to='/'/>
   }
     return (<span>
       <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
@@ -45,24 +39,24 @@ export default function DeleteUser(props) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
-        <DialogTitle>{"Delete Account"}</DialogTitle>
+        <DialogTitle>{"Delete "+props.shop.name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirm to delete your account.
+            Confirm to delete your shop {props.shop.name}.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRequestClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={deleteAccount} color="secondary" autoFocus="autoFocus">
+          <Button onClick={deleteShop} color="secondary" autoFocus="autoFocus">
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
     </span>)
-
 }
-DeleteUser.propTypes = {
-  userId: PropTypes.string.isRequired
+DeleteShop.propTypes = {
+  shop: PropTypes.object.isRequired,
+  onRemove: PropTypes.func.isRequired
 }
