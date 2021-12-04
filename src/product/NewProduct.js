@@ -35,6 +35,8 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: 'auto',
+    backgroundColor: '#9802dd',
+    color: '#fff',
     marginBottom: theme.spacing(2)
   },
   input: {
@@ -123,7 +125,7 @@ export default function NewProduct({match}) {
           }
         </CardContent>
         <CardActions>
-          <Button color="primary" variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
+          <Button variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
           <Link to={'/seller/shop/edit/'+match.params.shopId} className={classes.submit}><Button variant="contained">Cancel</Button></Link>
         </CardActions>
       </Card>

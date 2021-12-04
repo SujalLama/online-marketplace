@@ -10,7 +10,6 @@ const signin = async (user) => {
       },
       body: JSON.stringify(user)
     })
-    console.log(await response.json);
     return await response.json()
   } catch(err) {
     console.log(err)

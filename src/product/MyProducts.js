@@ -81,7 +81,7 @@ export default function MyProducts (props){
           Products
           <span className={classes.addButton}>
             <Link to={"/seller/"+props.shopId+"/products/new"}>
-              <Button color="primary" variant="contained">
+              <Button style={{backgroundColor: '#9802dd', color: '#fff', textDecoration: 'none'}} variant="contained">
                 <Icon className={classes.leftIcon}>add_box</Icon>  New Product
               </Button>
             </Link>

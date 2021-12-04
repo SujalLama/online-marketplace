@@ -8,6 +8,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar'
 import {Link} from 'react-router-dom'
 import AddToCart from './../cart/AddToCart'
 import { PHOTO_URL } from '../utils/constant'
+import Grid from '@material-ui/core/Grid'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,7 +18,8 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     background: theme.palette.background.paper,
     textAlign: 'left',
-    padding: '0 8px'
+    padding: '0 8px',
+    margin: "20px 30px 0",
   },
   container: {
     minWidth: '100%',
@@ -34,7 +36,8 @@ const useStyles = makeStyles(theme => ({
     width: '100%'
   },
   tile: {
-    textAlign: 'center'
+    textAlign: 'center',
+    boxShadow: '1px 3px 8px #ddd',
   },
   image: {
     height: '100%'
@@ -57,7 +60,8 @@ export default function Products(props){
       <div className={classes.root}>
       {props.products.length > 0 ?
         (<div className={classes.container}>
-          <GridList cellHeight={200} className={classes.gridList} cols={3}>
+          
+          <GridList cellHeight={200} className={classes.gridList} cols="3">
           {props.products.map((product, i) => (
             <GridListTile key={i} className={classes.tile}>
               <Link to={"/product/"+product._id}><img className={classes.image} src={PHOTO_URL+product.image} alt={product.name} /></Link>
@@ -70,7 +74,8 @@ export default function Products(props){
               />
             </GridListTile>
           ))}
-        </GridList></div>) : props.searched && (<Typography variant="subheading" component="h4" className={classes.title}>No products found! :(</Typography>)}
+        </GridList>
+        </div>) : props.searched && (<Typography variant="subheading" component="h4" className={classes.title}>No products found! :(</Typography>)}
       </div>)
 }
 Products.propTypes = {

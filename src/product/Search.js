@@ -14,8 +14,14 @@ const useStyles = makeStyles(theme => ({
   card: {
     margin: 'auto',
     textAlign: 'center',
-    paddingTop: 10,
-    backgroundColor: '#80808024'
+    border: 'none',
+    position: 'relative',
+    minHeight: '120px',
+    boxShadow: 'none',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    zIndex: '100'
   },
   menu: {
     width: 200,
@@ -68,7 +74,7 @@ export default function Search(props) {
     }
   }
   const enterKey = (event) => {
-    if(event.keyCode == 13){
+    if(event.keyCode === 13){
       event.preventDefault()
       search()
     }
@@ -76,10 +82,24 @@ export default function Search(props) {
     return (
       <div>
         <Card className={classes.card}>
+            <div className="background-color"></div>
+          <div className="search-bar-wrapper">
+          <div className="search-bar">
+          <TextField
+            id="search"
+            label="Search products"
+            type="search"
+            onKeyDown={enterKey}
+            onChange={handleChange('search')}
+            className={classes.searchField}
+            margin="normal"
+          / >
+            <SearchIcon className="search-icon" />
+          </div>
           <TextField
             id="select-category"
             select
-            label="Select category"
+            label="category"
             className={classes.textField}
             value={values.category}
             onChange={handleChange('category')}
@@ -98,21 +118,13 @@ export default function Search(props) {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            id="search"
-            label="Search products"
-            type="search"
-            onKeyDown={enterKey}
-            onChange={handleChange('search')}
-            className={classes.searchField}
-            margin="normal"
-          />
-          <Button variant="contained" color={'primary'} className={classes.searchButton} onClick={search}>
+          {/* <Button variant="contained" color={'primary'} className={classes.searchButton} onClick={search}>
             <SearchIcon/>
-          </Button>
-          <Divider/>
-          <Products products={values.results} searched={values.searched}/>
+          </Button> */}
+          </div>
         </Card>
+          {/* <Divider/> */}
+          <Products products={values.results} searched={values.searched}/>
       </div>
     )
 }

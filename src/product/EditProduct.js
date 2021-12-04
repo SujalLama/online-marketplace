@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: 'auto',
+    backgroundColor: '#9802dd',
     marginBottom: theme.spacing(2)
   },
   bigAvatar: {
@@ -152,7 +153,7 @@ export default function EditProduct ({match}) {
           }
         </CardContent>
         <CardActions>
-          <Button color="primary" variant="contained" onClick={clickSubmit} className={classes.submit}>Update</Button>
+          <Button variant="contained" onClick={clickSubmit} className={classes.submit}>Update</Button>
           <Link to={'/seller/shops/edit/'+match.params.shopId} className={classes.submit}><Button variant="contained">Cancel</Button></Link>
         </CardActions>
       </Card>

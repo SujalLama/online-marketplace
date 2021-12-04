@@ -5,11 +5,12 @@ import Suggestions from './../product/Suggestions'
 import {listLatest, listCategories} from './../product/api-product.js'
 import Search from './../product/Search'
 import Categories from './../product/Categories'
+import './home.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    margin: 30,
+    margin: '30px',
   }
 }))
 
@@ -51,16 +52,18 @@ export default function Home(){
   }, [])
 
     return (
-      <div className={classes.root}>
-        <Grid container spacing={2}>
-          <Grid item xs={8} sm={8}>
-            <Search categories={categories}/>
-            <Categories categories={categories}/>
+      <>
+        <Search categories={categories}/>
+        <div className={classes.root}>
+          <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={8}>
+            <Categories categories={categories}/>  
           </Grid>
-          <Grid item xs={4} sm={4}>
+          <Grid item xs={12} sm={12} md={4}>
             <Suggestions products={suggestions} title={suggestionTitle}/>
           </Grid>
-        </Grid>
-      </div>
+          </Grid>
+        </div>
+      </>
     )
 }

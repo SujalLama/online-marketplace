@@ -35,6 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: 'auto',
+    backgroundColor: '#9802dd',
     marginBottom: theme.spacing(2)
   },
   subheading: {
@@ -135,7 +136,7 @@ export default function EditProfile({ match }) {
           }
         </CardContent>
         <CardActions>
-          <Button color="primary" variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
+          <Button variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
         </CardActions>
       </Card>
     )
